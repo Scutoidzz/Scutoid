@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="../styles.css" />
+        <title>Sign In - Scutoid</title>
+    </head>
+    <body>
+        <div id="navbar">
+            <a href="../index.html">Home</a>
+            <a href="../projects.html">Projects</a>
+            <a href="../about.html">AI</a>
+            <a href="../contact.html">Contact</a>
+        </div>
+        <h1>Sign In</h1>
+        <script src="cookies.js"></script>
+        <form action="/signin" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required />
+            <br />
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required />
+            <br />
+            <button id="signinbutton" type="submit">Sign In</button>
+        </form>
+
+        <button>Don't have an account?</button>
+    </body>
+</html>
