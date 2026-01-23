@@ -1,6 +1,21 @@
 // System Prompt
 const SYSTEM_PROMPT = "You are Starry, a helpful AI assistant created by Scutoid. You are designed to be helpful, informative, and friendly while assisting users with their questions and tasks.";
 
+// Model Mapping
+const MODEL_MAPPING = {
+    'starry-14b': 'ministral-14b-latest',
+    'starry-img': 'mistral-large-latest',
+    'thinking-model': 'mistral-large-latest'
+};
+
+// Message Limit
+    const MESSAGE_LIMIT = 20;
+
+// State
+let chats = [];
+let currentChatId = null;
+let isWaitingForResponse = false;
+
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     const chatContainer = document.getElementById('chat_container');
@@ -32,13 +47,82 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteChatBtn = document.getElementById('delete_chat_btn');
     const clearAllChatsBtn = document.getElementById('clear_all_chats_btn');
 
-    // State
-    let chats = [];
-    let currentChatId = null;
-    let isWaitingForResponse = false;
+    // Initialization
+    init();
 
-    // Message Limit Logic
-    const MESSAGE_LIMIT = 20;
+    function init() {
+        loadTheme();
+        loadChats();
+
+        // Event Listeners
+        if (submitBtn) {
+            submitBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                sendMessage();
+});
+        }
+
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+            adjustTextareaHeight();
+        });
+
+        userInput.addEventListener('input', () => {
+            adjustTextareaHeight();
+            submitBtn.disabled = userInput.value.trim() === '';
+        });
+
+        themeToggle.addEventListener('click', toggleTheme);
+        newChatBtn.addEventListener('click', createNewChat);
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.add('open');
+            });
+        }
+
+        if (toggleSidebarBtn) {
+            toggleSidebarBtn.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+            });
+        }
+
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => {
+                settingsModal.style.display = 'flex';
+                deleteChatBtn.disabled = !currentChatId;
+            });
+        }
+
+        if (closeSettingsBtn) {
+            closeSettingsBtn.addEventListener('click', () => {
+                settingsModal.style.display = 'none';
+            });
+        }
+
+        if (deleteChatBtn) {
+            deleteChatBtn.addEventListener('click', deleteCurrentChat);
+        }
+
+        if (clearAllChatsBtn) {
+            clearAllChatsBtn.addEventListener('click', clearAllChats);
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        });
+
+        if (chats.length > 0) {
+            selectChat(chats[0].id);
+        } else {
+            showWelcomeScreen();
+        }
+    }
 
     function getMessageCount() {
         return parseInt(localStorage.getItem('scutoid_message_count') || '0');
@@ -72,14 +156,34 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    // Initialization
-    init();
+    function loadTheme() {
+        const saved = localStorage.getItem('scutoid_theme') || 'light';
+        document.body.setAttribute('data-theme', saved);
+        updateThemeIcon(saved);
+    }
 
-    function init() {
-        loadTheme();
-        loadChats();
+    function updateThemeIcon(theme) {
+        const sun = document.querySelector('.sun-icon');
+        const moon = document.querySelector('.moon-icon');
+        if (theme === 'dark') {
+            sun.style.display = 'none';
+            moon.style.display = 'block';
+        } else {
+            sun.style.display = 'block';
+            moon.style.display = 'none';
+        }
+    }
 
-        // ... [rest of the original ai.js content] ...
+    function loadChats() {
+        const stored = localStorage.getItem('scutoid_chats');
+        if (stored) {
+            chats = JSON.parse(stored);
+            renderChatHistory();
+        }
+    }
+
+    function saveChats() {
+        localStorage.setItem('scutoid_chats', JSON.stringify(chats));
     }
 
     // ... [rest of the original functions] ...
