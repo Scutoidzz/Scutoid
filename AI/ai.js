@@ -336,27 +336,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedModel = modelSelector.value;
             const apiModel = MODEL_MAPPING[selectedModel] || MODEL_MAPPING['starry-14b'];
 
-            // Prepare messages for API
-            const apiMessages = [
-                { role: 'system', content: SYSTEM_PROMPT },
-                ...chat.messages
-            ];
+            // Prepare messages for API - filter out system messages for user messages
+            const apiMessages = chat.messages.map(msg => ({
+                role: msg.role === 'assistant' ? 'assistant' : 'user',
+                content: msg.content
+            }));
 
             const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer oJ5CNcZOMsvzv3YXzq0FfX5I5sNZ6cwP' // Replace with actual key
+                    'Authorization': 'Bearer oJ5CNcZOMsvzv3YXzq0FfX5I5sNZ6cwP'
                 },
                 body: JSON.stringify({
                     model: apiModel,
                     messages: apiMessages,
                     temperature: 0.7,
-                    max_tokens: 1000
+                    max_tokens: 1000,
+                    safe_prompt: false
                 })
             });
 
             if (!response.ok) {
+                const errorData = await response.json();
+                console.error('API error details:', errorData);
                 throw new Error(`API error: ${response.status}`);
             }
 
