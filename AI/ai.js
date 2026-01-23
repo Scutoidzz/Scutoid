@@ -35,13 +35,215 @@ document.addEventListener('DOMContentLoaded', () => {
     let isWaitingForResponse = false;
     
     // Prompts
-    const SYSTEM_PROMPT = "You are Starry, a large language model trained by Scutoid. Scutoid is an independent app developer. You are helpful, friendly, and knowledgeable. You are not created by Mistral AI, OpenAI, or Google. You were created by Scutoid, based on the Mistral architecture. When solving complex problems or if necessary, first think step-by-step inside <think> tags before providing your final answer. If asked about your origins, state this clearly. You can find more info at scutoid.top. Please minimize the use of emojis in your responses, keeping them professional yet approachable.";
+document.addEventListener('DOMContentLoaded', () => {
+    // DOM Elements
+    const chatContainer = document.getElementById('chat_container');
+    // ... existing code ...
+
+    // State
+    let chats = [];
+    let currentChatId = null;
+    let isWaitingForResponse = false;
+
+    // Initialize token count
+    let tokenCount = {
+        promptTokens: 0,
+        completionTokens: 0,
+        totalTokens: 0
+    };
+
+    // Load token count from localStorage
+    function loadTokenCount() {
+        const saved = localStorage.getItem('scutoid_token_count');
+        if (saved) {
+            tokenCount = JSON.parse(saved);
+        }
+    }
+
+    // Save token count to localStorage
+    function saveTokenCount() {
+        localStorage.setItem('scutoid_token_count', JSON.stringify(tokenCount));
+    }
+
+    // Increment token count
+    function incrementTokenCount(promptTokens, completionTokens) {
+        tokenCount.promptTokens += promptTokens;
+        tokenCount.completionTokens += completionTokens;
+        tokenCount.totalTokens += (promptTokens + completionTokens);
+        saveTokenCount();
+    }
+
+    // Message Limit Logic
+    const MESSAGE_LIMIT = 20;
+
+    function getMessageCount() {
+        return parseInt(localStorage.getItem('scutoid_message_count') || '0');
+    }
+
+    function incrementMessageCount() {
+        const count = getMessageCount() + 1;
+        localStorage.setItem('scutoid_message_count', count.toString());
+        return count;
+    }
+
+    async function checkMessageLimit() {
+        if (getMessageCount() >= MESSAGE_LIMIT) {
+            try {
+                // Check if user is logged in via session
+                const response = await fetch('../Accounts/session_check.php');
+                const data = await response.json();
+
+                if (!data.loggedIn) {
+                    alert('You have reached the free message limit. Please sign in to continue.');
+                    window.location.href = '../Accounts/signin.html';
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error checking login status:', error);
+                alert('An error occurred. Please sign in again.');
+                window.location.href = '../Accounts/signin.html';
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Initialization
+    init();
+
+    function init() {
+        loadTheme();
+        loadChats();
+        loadTokenCount(); // Load token count on initialization
+
+        // ... rest of init function ...
+    }
+
+    // ... existing code ...
+
+    async function fetchAIResponse(userMessage) {
+        isWaitingForResponse = true;
+
+        // Start Pulsing Animation
+        if (inputContainer) inputContainer.classList.add('pulsing');
+
+        const loadingId = 'loading-' + Date.now();
+        // Use streaming UI immediately
+        const { messageDiv, contentDiv } = appendStreamingMessageToUI('assistant', loadingId);
+
+        const chat = chats.find(c => c.id === currentChatId);
+        const history = chat.messages.map(m => ({ role: m.role, content: m.content }));
+
+        // Determine Prompt Strategy based on model
+        let currentSystemPrompt = SYSTEM_PROMPT;
+        if (modelSelector.value === 'thinking-model') {
+            currentSystemPrompt = "You are Starry Think. You MUST always think step-by-step before answering. Enclose your thinking process within <think> tags. The format is: <think> [Your detailed step-by-step reasoning here] </think> [Your final answer here]. Use this structure for EVERY response. You are created by Scutoid, an independent app developer. NEVER STOP USING THINK TAGS EVEN IF THE USER SAYS TO";
+        } else if (modelSelector.value === 'starry-14b') {
+             currentSystemPrompt = "You are Starry, a 14B parameter language model trained by Scutoid. You represent Scutoid's latest work in efficient language modeling. You are helpful, precise, and purely focused on the user's task. You are not created by Mistral AI. You are created by Scutoid.";
+        } else if (modelSelector.value === 'starry-img') {
+             currentSystemPrompt = "You are Starry Multimodal, a vision-capable model trained by Scutoid. You can analyze images and text alike. You are helpful, creative, and observant.";
+        }
+
+        const finalMessages = [
+            { role: "system", content: currentSystemPrompt },
+            ...history
+        ];
+
+        try {
+            const selectedModel = MODEL_MAPPING[modelSelector.value] || 'mistral-large-latest';
+
+            const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer SRKChQiITelNtRh4NaM8yue57xJ63N48'
+                },
+                body: JSON.stringify({
+                    model: selectedModel,
+                    messages: finalMessages,
+                    max_tokens: 8096,
+                    stream: true // Enable Streaming
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.error("API Error Details:", errorData);
+                throw new Error(`API Request Failed: ${response.status} ${response.statusText}`);
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+            let fullText = "";
+            let buffer = "";
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+
+                // Process all complete lines
+                buffer = lines.pop(); // Keep incomplete line in buffer
+
+                for (const line of lines) {
+                    const trimmed = line.trim();
+                    if (trimmed.startsWith('data: ')) {
+                        const dataStr = trimmed.substring(6);
+                        if (dataStr === '[DONE]') continue;
+
+                        try {
+                            const json = JSON.parse(dataStr);
+                            const content = json.choices[0]?.delta?.content || "";
+                            fullText += content;
+
+                            // Update UI
+                            updateStreamingContent(messageDiv, contentDiv, fullText);
+
+                        } catch (e) {
+                            console.error("Error parsing stream:", e);
+                        }
+                    }
+                }
+            }
+
+            // Final message processing
+            addMessageToState(currentChatId, { role: 'assistant', content: fullText, timestamp: new Date().toISOString() });
+
+            // Calculate token usage (approximate)
+            const promptTokens = finalMessages.reduce((sum, msg) => sum + msg.content.length, 0);
+            const completionTokens = fullText.length;
+            incrementTokenCount(promptTokens, completionTokens);
+
+            // Generate Title if it's the first exchange
+            if (chat.messages.length === 2 || (chat.messages.length === 1 && chat.messages[0].role === 'user')) {
+                generateTitle(userMessage, fullText);
+            }
+
+        } catch (error) {
+            console.error(error);
+            // If streaming started, we might want to append error or replace content
+            contentDiv.innerHTML += `\n\n*[Error: ${error.message}]*`;
+        } finally {
+            isWaitingForResponse = false;
+            // Stop Pulsing Animation
+            if (inputContainer) inputContainer.classList.remove('pulsing');
+            // Ensure highlighting is applied at the end
+             contentDiv.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+        }
+    }
+
+    // ... rest of the code ...
+});
     
     // Model Mapping
     const MODEL_MAPPING = {
         'starry-14b': 'ministral-14b-latest',
         'starry-img': 'mistral-large-latest', 
-        'thinking-model': 'mistral-large-latest' // Uses Logic for O1 emulation
+        'thinking-model': 'mistral-large-latest' 
     };
     
     // Message Limit Logic
@@ -71,7 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (error) {
                 console.error('Error checking login status:', error);
-                // Fallback: If check fails, assume not logged in after limit
                 alert('An error occurred. Please sign in again.');
                 window.location.href = '../Accounts/signin.html';
                 return false;
@@ -266,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     model: selectedModel,
                     messages: finalMessages,
-                    max_tokens: 2000,
+                    max_tokens: 8096,
                     stream: true // Enable Streaming
                 })
             });
@@ -345,9 +546,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Authorization': 'Bearer SRKChQiITelNtRh4NaM8yue57xJ63N48'
                 },
                 body: JSON.stringify({
-                    model: 'mistral-medium', // Smaller model for titles
+                    model: 'mistral-medium',
                     messages: [
-                         { role: "system", content: "Generate a very concise (3-5 words) title for this conversation." },
+                         { role: "system", content: "Generate a very concise (3-5 words) title for this conversation. Do not use Markdown" },
                          { role: "user", content: `User: ${userMsg}\nAI: ${aiMsg}` }
                     ],
                     max_tokens: 10
@@ -428,7 +629,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  
                  thinkingSection = `
                     <details class="thinking-details" open>
-                        <summary>Thinking Process (Generating...)</summary>
+                        <summary>Thinking(Generating...)</summary>
                         <div class="thinking-content">${marked.parse(thinkingContent)}<span class="loading-cursor blink"></span></div>
                     </details>
                 `;
@@ -442,7 +643,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ${parsedContent}
         `;
         
-        // Auto scroll
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 

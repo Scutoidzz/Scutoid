@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="../styles.css" />
+        <title>Account - Scutoid</title>
+    </head>
+    <body>
+        <div id="tokenusagebar">
+            <a href="../AI/ai.html">Go to AI Chat</a>
+            <progress id="token-usage" value="0" max="10000"></progress>
+            <span id="token-usage-text">Tokens Used: 0 / 10000</span>
+        </div>
+        <script src="../AI/tokenusage.js"></script>
+        <script>
+            // Initialize token usage when the page loads
+            document.addEventListener('DOMContentLoaded', () => {
+                initTokenUsage();
+            });
+        </script>
+    </body>
+</html>
