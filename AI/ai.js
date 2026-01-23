@@ -601,6 +601,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateThemeIcon(newTheme);
     }
 
+    function create_cookie_from_PHP() {
+        // Placeholder for any future PHP cookie integration if needed
+    }
+
+
     function loadTheme() {
         const saved = localStorage.getItem('scutoid_theme') || 'light';
         document.body.setAttribute('data-theme', saved);

@@ -5,22 +5,35 @@ function createLoginCookie(username) {
 }
 
 function checkLoginStatus() {
-    document.cookie.split(';').forEach(cookie => {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
         const [name, value] = cookie.trim().split('=');
         if (name === 'username' && value) {
             updateUIForLoggedInUser(decodeURIComponent(value));
+            return true;
         }
-    });
+    }
+    return false;
 }
 
 function updateUIForLoggedInUser(username) {
-    const navbarLinks = document.querySelectorAll('#navbar a');
-    navbarLinks.forEach(link => {
-        if (link.href && link.href.includes('signin.html')) {
-            link.textContent = username;
-            link.href = '#'; // Or link to a profile page
-        }
+    const signinLinks = document.querySelectorAll('a[href*="signin.html"]');
+    signinLinks.forEach(link => {
+        link.textContent = username;
+        link.href = '#'; // Or link to profile page
+        link.onclick = (e) => {
+            e.preventDefault();
+            // Optionally show user menu
+        };
     });
 }
 
+
+function logout() {
+    // Expire the cookie
+    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    window.location.href = '../Accounts/signin.html';
+}
+
+// Run on page load
 document.addEventListener('DOMContentLoaded', checkLoginStatus);

@@ -25,13 +25,22 @@
             <br />
             <button id="signinbutton" type="submit">Sign In</button>
         </form>
-        <script>
-            // Check for error query parameter
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('error') === 'invalid_credentials') {
-                document.getElementById('error-message').style.display = 'block';
-            }
-        </script>
+<script>
+    // Check for error query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('error') === 'invalid_credentials') {
+        document.getElementById('error-message').style.display = 'block';
+    }
+    
+    // Handle successful login from URL parameter
+    if (urlParams.get('login') === 'success') {
+        const username = urlParams.get('username');
+        if (username) {
+            // Cookie should already be set by PHP, redirect to chat
+            window.location.href = '../index.html';
+        }
+    }
+</script>
 
         <button>Don't have an account?</button>
     </body>
