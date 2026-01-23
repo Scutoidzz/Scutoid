@@ -1,5 +1,11 @@
-// System Prompt
-const SYSTEM_PROMPT = "You are Starry, a helpful AI assistant created by Scutoid. You are designed to be helpful, informative, and friendly while assisting users with their questions and tasks.";
+// System Prompts for each model
+const SYSTEM_PROMPTS = {
+    'starry-14b': "You are Starry-14B, a helpful AI assistant created by Scutoid. You are designed to be helpful, informative, and friendly while assisting users with their questions and tasks. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate and concise information.",
+    
+    'starry-img': "You are Starry Multimodal, a helpful AI assistant created by Scutoid with advanced image understanding capabilities. You are designed to be helpful, informative, and friendly while assisting users with their questions and tasks, including analyzing and discussing images. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate and concise information.",
+    
+    'thinking-model': "You are Starry Think, an advanced reasoning AI assistant created by Scutoid. You are designed to think deeply and systematically about problems before responding. Always show your thinking process step-by-step, breaking down complex problems into smaller parts, considering multiple approaches, and reasoning through solutions carefully. Use chain-of-thought reasoning for every response, no matter how simple the question. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate, well-reasoned, and concise information."
+};
 
 // Model Mapping
 const MODEL_MAPPING = {
@@ -335,12 +341,16 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const selectedModel = modelSelector.value;
             const apiModel = MODEL_MAPPING[selectedModel] || MODEL_MAPPING['starry-14b'];
+            const systemPrompt = SYSTEM_PROMPTS[selectedModel] || SYSTEM_PROMPTS['starry-14b'];
 
-            // Prepare messages for API - filter out system messages for user messages
-            const apiMessages = chat.messages.map(msg => ({
-                role: msg.role === 'assistant' ? 'assistant' : 'user',
-                content: msg.content
-            }));
+            // Prepare messages for API with system message
+            const apiMessages = [
+                { role: 'system', content: systemPrompt },
+                ...chat.messages.map(msg => ({
+                    role: msg.role === 'assistant' ? 'assistant' : 'user',
+                    content: msg.content
+                }))
+            ];
 
             const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
                 method: 'POST',
