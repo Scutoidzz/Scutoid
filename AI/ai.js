@@ -301,33 +301,34 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function processThinkingTags(content) {
         // Check if content contains <think> tags
-        const thinkRegex = /<think>([\s\S]*?)<\/think>/g;
-        const matches = content.match(thinkRegex);
-        
-        if (!matches) {
+        if (!content.includes('<think>')) {
             return marked.parse(content);
         }
         
-        // Replace thinking sections with collapsible UI
-        let processed = content.replace(thinkRegex, (match, thinkContent) => {
-            const thinkId = 'think-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-            return `___THINK_PLACEHOLDER_${thinkId}___${thinkContent}___THINK_END___`;
-        });
+        // Split content into parts
+        const parts = content.split(/(<think>[\s\S]*?<\/think>)/);
+        let result = '';
         
-        // Parse markdown first
-        let result = marked.parse(processed);
-        
-        // Replace placeholders with actual thinking UI
-        result = result.replace(/___THINK_PLACEHOLDER_(think-[^_]+)___([\s\S]*?)___THINK_END___/g, (match, thinkId, thinkContent) => {
-            return `
-                <div class="thinking-section collapsed" id="${thinkId}">
-                    <div class="thinking-header" onclick="document.getElementById('${thinkId}').classList.toggle('collapsed')">
-                        <span class="thinking-icon">▼</span>
-                        <span>Show reasoning process</span>
+        parts.forEach(part => {
+            if (part.startsWith('<think>') && part.endsWith('</think>')) {
+                // Extract thinking content
+                const thinkContent = part.replace(/<\/?think>/g, '');
+                const thinkId = 'think-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                
+                // Create collapsible thinking section
+                result += `
+                    <div class="thinking-section collapsed" id="${thinkId}">
+                        <div class="thinking-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                            <span class="thinking-icon">▼</span>
+                            <span>Show reasoning process</span>
+                        </div>
+                        <div class="thinking-content">${marked.parse(thinkContent)}</div>
                     </div>
-                    <div class="thinking-content">${thinkContent}</div>
-                </div>
-            `;
+                `;
+            } else if (part.trim()) {
+                // Regular content - parse as markdown
+                result += marked.parse(part);
+            }
         });
         
         return result;
