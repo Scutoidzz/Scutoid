@@ -9,7 +9,7 @@ const MODEL_MAPPING = {
 };
 
 // Message Limit
-    const MESSAGE_LIMIT = 20;
+const MESSAGE_LIMIT = 20;
 
 // State
 let chats = [];
@@ -30,16 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
     const toggleSidebarBtn = document.getElementById('toggle_sidebar');
     const chatHistoryContainer = document.getElementById('chat_history');
-
-    // Add event listener to form submission to prevent default reload
-    const chatForm = document.getElementById('chat_form');
-    if (chatForm) {
-        chatForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            sendMessage();
-        });
-    }
     const welcomeScreen = document.getElementById('welcome_screen');
+    
     // Settings Modal Elements
     const settingsBtn = document.getElementById('settings_btn');
     const settingsModal = document.getElementById('settings_modal');
@@ -59,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 sendMessage();
-});
+            });
         }
 
         userInput.addEventListener('keydown', (e) => {
@@ -67,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 sendMessage();
             }
-            adjustTextareaHeight();
         });
 
         userInput.addEventListener('input', () => {
@@ -124,6 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function adjustTextareaHeight() {
+        userInput.style.height = 'auto';
+        userInput.style.height = Math.min(userInput.scrollHeight, 200) + 'px';
+    }
+
     function getMessageCount() {
         return parseInt(localStorage.getItem('scutoid_message_count') || '0');
     }
@@ -137,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
     async function checkMessageLimit() {
         if (getMessageCount() >= MESSAGE_LIMIT) {
             try {
-                // Check if user is logged in via session
                 const response = await fetch('../Accounts/session_check.php');
                 const data = await response.json();
 
@@ -197,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderChatHistory() {
         if (!chatHistoryContainer) return;
 
-        // Clear existing chat history
         chatHistoryContainer.innerHTML = '';
 
         if (chats.length === 0) {
@@ -205,24 +199,19 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Create chat history items
         chats.forEach(chat => {
             const chatItem = document.createElement('div');
-            chatItem.className = `chat-item ${chat.id === currentChatId ? 'active' : ''}`;
+            chatItem.className = `history-item ${chat.id === currentChatId ? 'active' : ''}`;
             chatItem.dataset.chatId = chat.id;
 
             const title = chat.messages.length > 0
                 ? chat.messages[0].content.substring(0, 30) + (chat.messages[0].content.length > 30 ? '...' : '')
                 : 'New Chat';
 
-            chatItem.innerHTML = `
-                <div class="chat-title">${title}</div>
-                <div class="chat-time">${new Date(chat.createdAt).toLocaleString()}</div>
-            `;
-
+            chatItem.textContent = title;
             chatItem.addEventListener('click', () => selectChat(chat.id));
             chatHistoryContainer.appendChild(chatItem);
-});
+        });
     }
 
     function createNewChat() {
@@ -232,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             messages: [],
             createdAt: new Date().toISOString()
         };
-        chats.push(newChat);
+        chats.unshift(newChat);
         currentChatId = newChatId;
         saveChats();
         renderChatHistory();
@@ -240,6 +229,182 @@ document.addEventListener('DOMContentLoaded', () => {
         showWelcomeScreen();
     }
 
-    // ... [rest of the original functions] ...
-});
+    function selectChat(chatId) {
+        currentChatId = chatId;
+        const chat = chats.find(c => c.id === chatId);
+        if (chat) {
+            renderMessages(chat.messages);
+            renderChatHistory();
+        }
+    }
 
+    function showWelcomeScreen() {
+        if (welcomeScreen) {
+            welcomeScreen.style.display = 'flex';
+        }
+        messagesList.innerHTML = '';
+    }
+
+    function hideWelcomeScreen() {
+        if (welcomeScreen) {
+            welcomeScreen.style.display = 'none';
+        }
+    }
+
+    function clearChatContainer() {
+        messagesList.innerHTML = '';
+        showWelcomeScreen();
+    }
+
+    function renderMessages(messages) {
+        hideWelcomeScreen();
+        messagesList.innerHTML = '';
+        messages.forEach(msg => {
+            addMessageToUI(msg.role, msg.content);
+        });
+        scrollToBottom();
+    }
+
+    function addMessageToUI(role, content) {
+        hideWelcomeScreen();
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${role}`;
+
+        if (role === 'assistant') {
+            messageDiv.innerHTML = `
+                <div class="message-avatar">S</div>
+                <div class="message-content">${marked.parse(content)}</div>
+            `;
+        } else {
+            messageDiv.innerHTML = `
+                <div class="message-content">${content}</div>
+            `;
+        }
+
+        messagesList.appendChild(messageDiv);
+        
+        // Highlight code blocks
+        messageDiv.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightElement(block);
+        });
+        
+        scrollToBottom();
+    }
+
+    function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    async function sendMessage() {
+        if (isWaitingForResponse) return;
+        
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        // Check message limit
+        const canSend = await checkMessageLimit();
+        if (!canSend) return;
+
+        // Get or create current chat
+        if (!currentChatId) {
+            createNewChat();
+        }
+
+        const chat = chats.find(c => c.id === currentChatId);
+        if (!chat) return;
+
+        // Add user message
+        chat.messages.push({ role: 'user', content: message });
+        addMessageToUI('user', message);
+        saveChats();
+        renderChatHistory();
+
+        // Clear input
+        userInput.value = '';
+        adjustTextareaHeight();
+        submitBtn.disabled = true;
+
+        // Show loading state
+        isWaitingForResponse = true;
+        inputContainer.classList.add('pulsing');
+
+        // Increment message count
+        incrementMessageCount();
+
+        try {
+            const selectedModel = modelSelector.value;
+            const apiModel = MODEL_MAPPING[selectedModel] || MODEL_MAPPING['starry-14b'];
+
+            // Prepare messages for API
+            const apiMessages = [
+                { role: 'system', content: SYSTEM_PROMPT },
+                ...chat.messages
+            ];
+
+            const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer oJ5CNcZOMsvzv3YXzq0FfX5I5sNZ6cwP' // Replace with actual key
+                },
+                body: JSON.stringify({
+                    model: apiModel,
+                    messages: apiMessages,
+                    temperature: 0.7,
+                    max_tokens: 1000
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const aiResponse = data.choices[0].message.content;
+
+            // Add AI response
+            chat.messages.push({ role: 'assistant', content: aiResponse });
+            addMessageToUI('assistant', aiResponse);
+            saveChats();
+            renderChatHistory();
+
+        } catch (error) {
+            console.error('Error sending message:', error);
+            addMessageToUI('assistant', 'Sorry, I encountered an error. Please try again.');
+        } finally {
+            isWaitingForResponse = false;
+            inputContainer.classList.remove('pulsing');
+        }
+    }
+
+    function deleteCurrentChat() {
+        if (!currentChatId) return;
+        
+        if (confirm('Are you sure you want to delete this chat?')) {
+            chats = chats.filter(c => c.id !== currentChatId);
+            saveChats();
+            
+            if (chats.length > 0) {
+                selectChat(chats[0].id);
+            } else {
+                currentChatId = null;
+                clearChatContainer();
+            }
+            
+            renderChatHistory();
+            settingsModal.style.display = 'none';
+        }
+    }
+
+    function clearAllChats() {
+        if (confirm('Are you sure you want to delete all chats? This cannot be undone.')) {
+            chats = [];
+            currentChatId = null;
+            saveChats();
+            clearChatContainer();
+            renderChatHistory();
+            settingsModal.style.display = 'none';
+        }
+    }
+});

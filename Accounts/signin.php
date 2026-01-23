@@ -17,7 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = trim($_POST['username']);
     $pass = trim($_POST['password']);
 
-    // THIS WAS MISSING - Query the database
     $stmt = $conn->prepare("SELECT username, password FROM users WHERE username = ?");
     $stmt->bind_param("s", $user);
     $stmt->execute();
@@ -35,8 +34,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($credentials_valid) {
         $_SESSION['username'] = $user;
         $_SESSION['logged_in'] = true;
-        $_SESSION['loggedin'] = true;  // Added - session_check.php looks for this
-        $_SESSION['user_id'] = $user;  // Added - session_check.php looks for this
+        $_SESSION['loggedin'] = true;
+        $_SESSION['user_id'] = $user;
         
         setcookie('username', $user, time() + (30 * 24 * 60 * 60), '/');
         

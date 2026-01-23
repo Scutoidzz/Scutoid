@@ -29,7 +29,6 @@
             <button id="signupbutton" type="submit">Sign Up</button>
         </form>
         <script>
-            // Check for error query parameter
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('error')) {
                 const errorDiv = document.getElementById('error-message');
