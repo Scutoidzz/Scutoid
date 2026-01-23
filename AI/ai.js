@@ -1,10 +1,11 @@
 // System Prompts for each model
 const SYSTEM_PROMPTS = {
-    'starry-14b': "You are Starry-14B, a helpful AI assistant created by Scutoid. You are designed to be helpful, informative, and friendly while assisting users with their questions and tasks. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate and concise information. You are not created by Mistral AI, Google, or OpenAI.",
+    'starry-14b': "You are Starry-14B, a helpful AI assistant created by Scutoid. You are designed to be helpful, informative, and friendly while assisting users with their questions and tasks. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate and concise information.",
     
-    'starry-img': "You are Starry Multimodal, a helpful AI assistant created by Scutoid with advanced image understanding capabilities. You are designed to be helpful, informative, and friendly while assisting users with their questions and tasks, including analyzing and discussing images. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate and concise information. You are not created by Mistral AI, Google, or OpenAI.",
+    'starry-img': "You are Starry Multimodal, a helpful AI assistant created by Scutoid with advanced image understanding capabilities. You are designed to be helpful, informative, and friendly while assisting users with their questions and tasks, including analyzing and discussing images. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate and concise information.",
     
-'thinking-model': "You are Starry Think, an advanced reasoning AI assistant created by Scutoid. You are not created by Mistral AI, Google, or OpenAI.\n\nCRITICAL INSTRUCTION: You MUST structure every single response in the following format without exception:\n\n<think>\n[Your detailed step-by-step reasoning process here]\n- Break down the problem\n- Consider multiple approaches\n- Work through the logic systematically\n- Evaluate different possibilities\n</think>\n\n[Your final answer here]\n\nThis format is MANDATORY for all responses, even simple ones. Always start with <think> tags containing your reasoning process, then provide your final answer outside the tags. Never skip the thinking section. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate, well-reasoned, and concise information."};
+    'thinking-model': "You are Starry Think, an advanced reasoning AI assistant created by Scutoid. You are designed to think deeply and systematically about problems before responding. Always show your thinking process step-by-step, breaking down complex problems into smaller parts, considering multiple approaches, and reasoning through solutions carefully. Use chain-of-thought reasoning for every response, no matter how simple the question. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate, well-reasoned, and concise information."
+};
 
 // Model Mapping
 const MODEL_MAPPING = {
@@ -277,9 +278,10 @@ document.addEventListener('DOMContentLoaded', () => {
         messageDiv.className = `message ${role}`;
 
         if (role === 'assistant') {
+            const processedContent = processThinkingTags(content);
             messageDiv.innerHTML = `
                 <div class="message-avatar">S</div>
-                <div class="message-content">${marked.parse(content)}</div>
+                <div class="message-content">${processedContent}</div>
             `;
         } else {
             messageDiv.innerHTML = `
@@ -295,6 +297,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         scrollToBottom();
+    }
+    
+    function processThinkingTags(content) {
+        // Check if content contains <think> tags
+        const thinkRegex = /<think>([\s\S]*?)<\/think>/g;
+        const matches = content.match(thinkRegex);
+        
+        if (!matches) {
+            return marked.parse(content);
+        }
+        
+        // Replace thinking sections with collapsible UI
+        let processed = content.replace(thinkRegex, (match, thinkContent) => {
+            const thinkId = 'think-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            return `___THINK_PLACEHOLDER_${thinkId}___${thinkContent}___THINK_END___`;
+        });
+        
+        // Parse markdown first
+        let result = marked.parse(processed);
+        
+        // Replace placeholders with actual thinking UI
+        result = result.replace(/___THINK_PLACEHOLDER_(think-[^_]+)___([\s\S]*?)___THINK_END___/g, (match, thinkId, thinkContent) => {
+            return `
+                <div class="thinking-section collapsed" id="${thinkId}">
+                    <div class="thinking-header" onclick="document.getElementById('${thinkId}').classList.toggle('collapsed')">
+                        <span class="thinking-icon">▼</span>
+                        <span>Show reasoning process</span>
+                    </div>
+                    <div class="thinking-content">${thinkContent}</div>
+                </div>
+            `;
+        });
+        
+        return result;
     }
 
     function scrollToBottom() {
@@ -404,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             const content = parsed.choices[0]?.delta?.content;
                             if (content) {
                                 fullResponse += content;
-                                contentDiv.innerHTML = marked.parse(fullResponse);
+                                contentDiv.innerHTML = processThinkingTags(fullResponse);
                                 
                                 // Highlight code blocks
                                 contentDiv.querySelectorAll('pre code').forEach((block) => {
