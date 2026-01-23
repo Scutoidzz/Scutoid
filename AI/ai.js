@@ -363,7 +363,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     messages: apiMessages,
                     temperature: 0.7,
                     max_tokens: 1000,
-                    safe_prompt: false
+                    safe_prompt: false,
+                    stream: true
                 })
             });
 
@@ -373,12 +374,55 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`API error: ${response.status}`);
             }
 
-            const data = await response.json();
-            const aiResponse = data.choices[0].message.content;
+            // Create a message element for streaming
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message assistant';
+            messageDiv.innerHTML = `
+                <div class="message-avatar">S</div>
+                <div class="message-content"></div>
+            `;
+            messagesList.appendChild(messageDiv);
+            const contentDiv = messageDiv.querySelector('.message-content');
+            
+            let fullResponse = '';
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
 
-            // Add AI response
-            chat.messages.push({ role: 'assistant', content: aiResponse });
-            addMessageToUI('assistant', aiResponse);
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') continue;
+
+                        try {
+                            const parsed = JSON.parse(data);
+                            const content = parsed.choices[0]?.delta?.content;
+                            if (content) {
+                                fullResponse += content;
+                                contentDiv.innerHTML = marked.parse(fullResponse);
+                                
+                                // Highlight code blocks
+                                contentDiv.querySelectorAll('pre code').forEach((block) => {
+                                    hljs.highlightElement(block);
+                                });
+                                
+                                scrollToBottom();
+                            }
+                        } catch (e) {
+                            // Skip invalid JSON
+                        }
+                    }
+                }
+            }
+
+            // Add AI response to chat history
+            chat.messages.push({ role: 'assistant', content: fullResponse });
             saveChats();
             renderChatHistory();
 
