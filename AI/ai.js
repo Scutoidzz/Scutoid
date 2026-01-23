@@ -181,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('scutoid_theme', newTheme);
         updateThemeIcon(newTheme);
     }
+
     function loadChats() {
         const stored = localStorage.getItem('scutoid_chats');
         if (stored) {
@@ -222,6 +223,21 @@ document.addEventListener('DOMContentLoaded', () => {
             chatItem.addEventListener('click', () => selectChat(chat.id));
             chatHistoryContainer.appendChild(chatItem);
 });
+    }
+
+    function createNewChat() {
+        const newChatId = Date.now().toString();
+        const newChat = {
+            id: newChatId,
+            messages: [],
+            createdAt: new Date().toISOString()
+        };
+        chats.push(newChat);
+        currentChatId = newChatId;
+        saveChats();
+        renderChatHistory();
+        clearChatContainer();
+        showWelcomeScreen();
     }
 
     // ... [rest of the original functions] ...
