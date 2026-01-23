@@ -186,5 +186,37 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('scutoid_chats', JSON.stringify(chats));
     }
 
+    function renderChatHistory() {
+        if (!chatHistoryContainer) return;
+
+        // Clear existing chat history
+        chatHistoryContainer.innerHTML = '';
+
+        if (chats.length === 0) {
+            chatHistoryContainer.innerHTML = '<div class="no-chats">No chats yet</div>';
+            return;
+        }
+
+        // Create chat history items
+        chats.forEach(chat => {
+            const chatItem = document.createElement('div');
+            chatItem.className = `chat-item ${chat.id === currentChatId ? 'active' : ''}`;
+            chatItem.dataset.chatId = chat.id;
+
+            const title = chat.messages.length > 0
+                ? chat.messages[0].content.substring(0, 30) + (chat.messages[0].content.length > 30 ? '...' : '')
+                : 'New Chat';
+
+            chatItem.innerHTML = `
+                <div class="chat-title">${title}</div>
+                <div class="chat-time">${new Date(chat.createdAt).toLocaleString()}</div>
+            `;
+
+            chatItem.addEventListener('click', () => selectChat(chat.id));
+            chatHistoryContainer.appendChild(chatItem);
+});
+    }
+
     // ... [rest of the original functions] ...
 });
+
