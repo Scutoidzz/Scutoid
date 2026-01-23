@@ -142,13 +142,15 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
         
-        // Add sign in functionality
+        // Add sign in functionality with a small delay
         const signinLink = document.getElementById('signin_link');
         if (signinLink) {
+            setTimeout(() => { // Add a small delay
             signinLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 window.location.href = getPath('Accounts/signin.html');
             });
+            }, 50); // 50ms delay
         }
         
         // Mobile Menu Logic
@@ -165,3 +167,4 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize the navbar
     injectNavbar();
 });
+
