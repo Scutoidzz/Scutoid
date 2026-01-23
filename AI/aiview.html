@@ -8,17 +8,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- Navbar Injection -->
     <script src="../components/navbar.js" defer></script>
     <script src="../Accounts/cookies.js" defer></script>
-    <!-- Add this in the <head> section of your main chat page -->
 <script src="../Accounts/cookies.js"></script>
 
 <!-- Make sure your navbar has the id="navbar" -->
 <div id="navbar">
     <a href="../index.html">Home</a>
     <a href="../projects.html">Projects</a>
-    <a href="../about.html">AI</a>
     <a href="../contact.html">Contact</a>
     <a href="../Accounts/signin.html" id="signin-link">Sign In</a>
 </div>
@@ -137,16 +134,18 @@
                         <button id="clear_all_chats_btn" class="danger-btn">Clear All Chats</button>
                     </div>
                 </div>
-                <!-- Future settings like API key input, system prompt override, etc. can go here -->
+                <div class="setting-item">
+                    <label for="model_selector_modal">Contact Support</label>
+                    <div>
+                        <a href="mailto:support@scutoid.top" class="primary-btn">Email</a>
+                    </div>
+                    </select>
             </div>
         </div>
     </div>
 
     <script src="ai.js"></script>
-    <script type="module" src="tokenusage.js"></script>
-    <script type="module">
-        import { initTokenUsage } from './tokenusage.js';
-        document.addEventListener('DOMContentLoaded', initTokenUsage);
-    </script>
+    <script src="tokenusage.js" defer></script>
+
 </body>
 </html>
