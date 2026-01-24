@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +19,7 @@
             margin: 12px 0;
             overflow: hidden;
         }
-        
+
         .thinking-header {
             display: flex;
             align-items: center;
@@ -30,39 +31,39 @@
             color: #666;
             font-weight: 500;
         }
-        
+
         [data-theme="dark"] .thinking-header {
             color: #999;
         }
-        
+
         .thinking-header:hover {
             background: rgba(100, 100, 255, 0.05);
         }
-        
+
         .thinking-icon {
             transition: transform 0.2s;
             font-size: 12px;
         }
-        
+
         .thinking-section.collapsed .thinking-icon {
             transform: rotate(-90deg);
         }
-        
+
         .thinking-content {
             padding: 0 14px 14px 14px;
             font-size: 0.9em;
             color: #555;
             line-height: 1.6;
         }
-        
+
         [data-theme="dark"] .thinking-content {
             color: #aaa;
         }
-        
+
         .thinking-section.collapsed .thinking-content {
             display: none;
         }
-        
+
         .thinking-badge {
             display: inline-flex;
             align-items: center;
@@ -74,7 +75,7 @@
             color: #5555ff;
             margin-bottom: 8px;
         }
-        
+
         .thinking-spinner {
             width: 12px;
             height: 12px;
@@ -83,33 +84,40 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 
-<div id="navbar">
-    <a href="../index.html">Home</a>
-    <a href="../projects.html">Projects</a>
-    <a href="../contact.html">Contact</a>
-    <a href="../Accounts/signin.html" id="signin-link">Sign In</a>
-</div>
+    <div id="navbar">
+        <a href="../index.html">Home</a>
+        <a href="../projects.html">Projects</a>
+        <a href="../contact.html">Contact</a>
+        <a href="../Accounts/signin.html" id="signin-link">Sign In</a>
+    </div>
 </head>
+
 <body>
     <!-- Navbar Placeholder -->
     <div id="navbar-placeholder"></div>
-    
+
     <div class="app-layout" style="margin-top: 64px; height: calc(100vh - 64px);">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <button id="new_chat_btn" class="new-chat-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
                     <span>New Chat</span>
                 </button>
             </div>
-            
+
             <div class="chat-history" id="chat_history">
                 <div class="history-label">Today</div>
             </div>
@@ -121,7 +129,13 @@
                         <div class="username">User</div>
                     </div>
                     <button id="settings_btn" class="icon-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                            </path>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -138,9 +152,25 @@
                     </select>
                 </div>
                 <div class="header-actions">
-                   <button id="theme_toggle" class="icon-btn" title="Toggle Theme">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    <button id="theme_toggle" class="icon-btn" title="Toggle Theme">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="sun-icon">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="moon-icon" style="display:none;">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
                     </button>
                 </div>
             </header>
@@ -161,8 +191,13 @@
                 <div class="input-container">
                     <textarea id="user_input" rows="1" placeholder="Send a message..."></textarea>
                     <div class="input-actions-right">
-                         <button class="send-btn" id="submit_msg_btn" disabled>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        <button class="send-btn" id="submit_msg_btn" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -200,51 +235,11 @@
 
     <script src="ai.js"></script>
     <script src="tokenusage.js" defer></script>
-    
+
     <script>
-        // Enhanced message rendering with collapsible thinking sections
-        function processThinkingTags(content) {
-            // Check if content contains <think> tags
-            const thinkRegex = /<think>([\s\S]*?)<\/think>/g;
-            const matches = content.match(thinkRegex);
-            
-            if (!matches) {
-                return marked.parse(content);
-            }
-            
-            // Replace thinking sections with collapsible UI
-            let processed = content.replace(thinkRegex, (match, thinkContent) => {
-                const thinkId = 'think-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-                return `
-                    <div class="thinking-section collapsed" id="${thinkId}">
-                        <div class="thinking-header" onclick="document.getElementById('${thinkId}').classList.toggle('collapsed')">
-                            <span class="thinking-icon">▼</span>
-                            <span>Show reasoning process</span>
-                        </div>
-                        <div class="thinking-content">${marked.parse(thinkContent)}</div>
-                    </div>
-                `;
-            });
-            
-            // Parse the rest of the content
-            const finalContent = processed.replace(/<think>[\s\S]*?<\/think>/g, '');
-            const parts = finalContent.split(/(<div class="thinking-section[\s\S]*?<\/div>\s*<\/div>)/);
-            
-            return parts.map(part => {
-                if (part.includes('thinking-section')) {
-                    return part;
-                }
-                return marked.parse(part);
-            }).join('');
-        }
-        
-        // Override the addMessageToUI function to use the new thinking processor
-        const originalScript = document.querySelector('script[src="ai.js"]');
-        if (originalScript) {
-            originalScript.addEventListener('load', function() {
-                // The thinking tag processing will be integrated into the streaming response
-            });
-        }
+        // Thinking tag processing is now handled by ai.js
+        // The function supports both <think> and <thinking> tag formats
     </script>
 </body>
+
 </html>

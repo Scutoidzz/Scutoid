@@ -1,9 +1,9 @@
 // System Prompts for each model
 const SYSTEM_PROMPTS = {
     'starry-14b': "You are Starry-14B, a helpful AI assistant created by Scutoid. You are designed to be helpful, informative, and friendly while assisting users with their questions and tasks. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate and concise information.",
-    
+
     'starry-img': "You are Starry Multimodal, a helpful AI assistant created by Scutoid with advanced image understanding capabilities. You are designed to be helpful, informative, and friendly while assisting users with their questions and tasks, including analyzing and discussing images. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate and concise information.",
-    
+
     'thinking-model': "You are Starry Think, an advanced reasoning AI assistant created by Scutoid. You are designed to think deeply and systematically about problems before responding. Always show your thinking process step-by-step, breaking down complex problems into smaller parts, considering multiple approaches, and reasoning through solutions carefully. Use chain-of-thought reasoning for every response, no matter how simple the question. Keep your responses clear and professional, using emojis sparingly or not at all. Focus on delivering accurate, well-reasoned, and concise information."
 };
 
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleSidebarBtn = document.getElementById('toggle_sidebar');
     const chatHistoryContainer = document.getElementById('chat_history');
     const welcomeScreen = document.getElementById('welcome_screen');
-    
+
     // Settings Modal Elements
     const settingsBtn = document.getElementById('settings_btn');
     const settingsModal = document.getElementById('settings_modal');
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addMessageToUI(role, content) {
         hideWelcomeScreen();
-        
+
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${role}`;
 
@@ -290,31 +290,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         messagesList.appendChild(messageDiv);
-        
+
         // Highlight code blocks
         messageDiv.querySelectorAll('pre code').forEach((block) => {
             hljs.highlightElement(block);
         });
-        
+
         scrollToBottom();
     }
-    
+
     function processThinkingTags(content) {
-        // Check if content contains <think> tags
-        if (!content.includes('<think>')) {
+        // Check if content contains <think> or <thinking> tags
+        if (!content.includes('<think>') && !content.includes('<thinking>')) {
             return marked.parse(content);
         }
-        
-        // Split content into parts
-        const parts = content.split(/(<think>[\s\S]*?<\/think>)/);
+
+        // Split content into parts - match both <think> and <thinking> tags
+        const parts = content.split(/(<think(?:ing)?>([\s\S]*?)<\/think(?:ing)?>)/);
         let result = '';
-        
-        parts.forEach(part => {
-            if (part.startsWith('<think>') && part.endsWith('</think>')) {
+
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+            if (!part) continue;
+
+            // Check for both tag formats
+            const thinkMatch = part.match(/^<think(?:ing)?>([\s\S]*?)<\/think(?:ing)?>$/);
+            if (thinkMatch) {
                 // Extract thinking content
-                const thinkContent = part.replace(/<\/?think>/g, '');
+                const thinkContent = thinkMatch[1];
                 const thinkId = 'think-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-                
+
                 // Create collapsible thinking section
                 result += `
                     <div class="thinking-section collapsed" id="${thinkId}">
@@ -325,12 +330,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="thinking-content">${marked.parse(thinkContent)}</div>
                     </div>
                 `;
-            } else if (part.trim()) {
-                // Regular content - parse as markdown
+            } else if (part.trim() && !part.match(/^<think(?:ing)?>/) && !part.match(/<\/think(?:ing)?>$/)) {
+                // Regular content - parse as markdown (skip captured groups from regex)
                 result += marked.parse(part);
             }
-        });
-        
+        }
+
         return result;
     }
 
@@ -340,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function sendMessage() {
         if (isWaitingForResponse) return;
-        
+
         const message = userInput.value.trim();
         if (!message) return;
 
@@ -419,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             messagesList.appendChild(messageDiv);
             const contentDiv = messageDiv.querySelector('.message-content');
-            
+
             let fullResponse = '';
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
@@ -442,12 +447,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (content) {
                                 fullResponse += content;
                                 contentDiv.innerHTML = processThinkingTags(fullResponse);
-                                
+
                                 // Highlight code blocks
                                 contentDiv.querySelectorAll('pre code').forEach((block) => {
                                     hljs.highlightElement(block);
                                 });
-                                
+
                                 scrollToBottom();
                             }
                         } catch (e) {
@@ -473,18 +478,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function deleteCurrentChat() {
         if (!currentChatId) return;
-        
+
         if (confirm('Are you sure you want to delete this chat?')) {
             chats = chats.filter(c => c.id !== currentChatId);
             saveChats();
-            
+
             if (chats.length > 0) {
                 selectChat(chats[0].id);
             } else {
                 currentChatId = null;
                 clearChatContainer();
             }
-            
+
             renderChatHistory();
             settingsModal.style.display = 'none';
         }
