@@ -5,7 +5,7 @@
     --nav-hover: #ffffff;
     --nav-height: 64px;
     --backdrop-blur: 16px;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
     --avatar-size: 32px;
     --avatar-bg: #4285f4;
     --avatar-text: white;
@@ -19,46 +19,52 @@
     --avatar-bg: #8ab4f8;
 }
 
-/* Navbar Container */
+/* Navbar Container - Pill Design */
 .main-navbar {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--nav-height);
-    background: var(--nav-bg);
-    backdrop-filter: blur(var(--backdrop-blur));
-    -webkit-backdrop-filter: blur(var(--backdrop-blur));
-    border-bottom: 1px solid var(--nav-border);
-    z-index: 1000;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    min-width: 340px;
+    max-width: 90%;
+    height: auto;
+    min-height: 54px;
+
+    background: rgba(22, 27, 34, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(240, 246, 252, 0.1);
+    border-radius: 100px;
+
     display: flex;
     align-items: center;
-    padding: 0 24px;
-    box-shadow: var(--shadow-sm);
+    padding: 6px 24px;
+
+    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     transition: all 0.3s ease;
 }
 
 .nav-content {
-    max-width: 1400px;
     width: 100%;
-    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 20px;
 }
 
 /* Logo */
 .nav-logo {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     color: var(--nav-text);
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: color 0.2s;
+    white-space: nowrap;
 }
-
 
 /* Links */
 .nav-links {
@@ -70,96 +76,91 @@
 .nav-link {
     color: var(--nav-text);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 8px 14px;
+    border-radius: 100px;
     transition: all 0.2s;
-    position: relative;
     opacity: 0.8;
 }
 
+.nav-link:hover,
+.nav-link.active {
+    color: var(--nav-hover);
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 1;
+}
 
 /* User Profile Section */
 .user-profile-nav {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .avatar {
-    width: var(--avatar-size);
-    height: var(--avatar-size);
-    background: var(--avatar-bg);
-    color: var(--avatar-text);
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #1f6feb, #58a6ff);
+    color: white;
     border-radius: 50%;
-    display: none; /* Hidden by default */
+    display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 500;
-    font-size: 14px;
-    cursor: pointer;
-    transition: transform 0.2s;
+    font-weight: 700;
+    font-size: 12px;
 }
-
-
 
 .user-info {
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 .username {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
     color: var(--nav-text);
-    opacity: 0.9;
-    display: none; /* Hidden by default */
 }
 
 .auth-btn {
     background: none;
-    border: none;
-    color: var(--nav-text);
-    font-size: 14px;
-    font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 20px;
+    border: 1px solid rgba(248, 81, 73, 0.4);
+    color: #f85149;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 100px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     transition: all 0.2s;
-    opacity: 0.8;
 }
 
-
-
-.auth-btn.user-mode {
-    background: rgba(211, 47, 47, 0.1);
-    color: #d32f2f;
+.auth-btn:hover {
+    background: rgba(248, 81, 73, 0.1);
+    border-color: #f85149;
 }
 
-.auth-btn.user-mode:hover {
-    background: rgba(211, 47, 47, 0.2);
+.auth-btn svg {
+    width: 14px;
+    height: 14px;
 }
 
-/* Sign In Button (for non-user mode) */
+/* Sign In Button */
 .nav-btn {
-    background: var(--nav-hover);
+    background: #238636;
     color: white !important;
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-weight: 500;
-    transition: transform 0.2s, box-shadow 0.2s;
-    opacity: 1;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 13px;
+    border: 1px solid rgba(240, 246, 252, 0.1);
 }
 
 .nav-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
-    background: var(--nav-hover) !important;
+    background: #2ea043 !important;
+    box-shadow: 0 0 10px rgba(46, 160, 67, 0.4);
 }
 
 /* Mobile Menu */
@@ -194,13 +195,13 @@
     .mobile-menu-btn {
         display: block;
     }
-    
+
     .nav-link {
         width: 100%;
         text-align: center;
         padding: 12px;
     }
-    
+
     .user-profile-nav {
         flex-direction: column;
         align-items: flex-start;
@@ -208,9 +209,8 @@
         padding: 12px 0;
         border-top: 1px solid var(--nav-border);
     }
-    
+
     .user-info {
         margin-left: 0;
     }
 }
-
