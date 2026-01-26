@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadTheme() {
-        const saved = localStorage.getItem('scutoid_theme') || 'light';
+        const saved = localStorage.getItem('scutoid_theme') || 'dark';
         document.body.setAttribute('data-theme', saved);
         updateThemeIcon(saved);
     }

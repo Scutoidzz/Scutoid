@@ -1,6 +1,7 @@
 /* Inherit Global Theme Variables from styles.css */
+/* Inherit Global Theme Variables from styles.css */
 :root {
-    /* Mapping to Global Variables */
+    /* Default to Dark Mode (matching styles.css) */
     --primary-color: var(--accent-color, #58a6ff);
     --background-color: var(--bg-color, #0d1117);
     --sidebar-bg: var(--card-bg, #161b22);
@@ -9,9 +10,8 @@
     --text-secondary: var(--text-secondary, #8b949e);
     --border-color: var(--card-border, #30363d);
 
-    /* Specific App Colors */
+    /* Specific App Colors - Dark (Default) */
     --user-msg-bg: rgba(31, 111, 235, 0.15);
-    /* Subtle Blue Tint */
     --ai-msg-bg: transparent;
     --input-bg: rgba(22, 27, 34, 0.8);
     --input-text: var(--text-primary, #f0f6fc);
@@ -23,12 +23,49 @@
 
     /* Layout */
     --nav-height: 80px;
-    /* Space for floating navbar */
 }
 
-/* Force Dark Theme consistency */
+/* Light Theme Overrides */
+[data-theme="light"] {
+    --primary-color: #0969da;
+    /* GitHub/Standard Blue */
+    --background-color: #ffffff;
+    --sidebar-bg: #f6f8fa;
+    --chat-bg: #ffffff;
+    --text-primary: #1f2328;
+    --text-secondary: #656d76;
+    --border-color: #d0d7de;
+
+    --user-msg-bg: #ddf4ff;
+    --ai-msg-bg: transparent;
+    --input-bg: #ffffff;
+    --input-text: #1f2328;
+    --hover-color: #f3f4f6;
+    --danger-color: #cf222e;
+    --success-color: #1a7f37;
+    --thinking-bg: #f6f8fa;
+    --thinking-border: #d0d7de;
+}
+
+/* Dark Theme (Reinforce Defaults) */
 [data-theme="dark"] {
-    /* Already using dark variables by default */
+    --primary-color: var(--accent-color, #58a6ff);
+    --background-color: var(--bg-color, #0d1117);
+    --sidebar-bg: var(--card-bg, #161b22);
+    --chat-bg: var(--bg-color, #0d1117);
+    --text-primary: var(--text-primary, #f0f6fc);
+    --text-secondary: var(--text-secondary, #8b949e);
+    --border-color: var(--card-border, #30363d);
+
+    --user-msg-bg: rgba(31, 111, 235, 0.15);
+    --ai-msg-bg: transparent;
+    --input-bg: rgba(22, 27, 34, 0.8);
+    --input-text: var(--text-primary, #f0f6fc);
+    --hover-color: rgba(255, 255, 255, 0.05);
+    --danger-color: #f85149;
+    --success-color: #3fb950;
+    --thinking-bg: rgba(22, 27, 34, 0.5);
+    --thinking-border: var(--card-border, #30363d);
 }
 
 body {
@@ -436,6 +473,7 @@ body {
     font-weight: 800;
     background: linear-gradient(to right, #ffffff, #8b949e);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 16px;
 }
