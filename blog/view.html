@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog - Scutoid</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Blog specific styles */
+        .blog-container {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            /* Top margin accounts for navbar */
+            padding: 0 24px;
+        }
+
+        .blog-header {
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 20px;
+        }
+
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .blog-content h1,
+        .blog-content h2,
+        .blog-content h3 {
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            color: var(--text-primary);
+        }
+
+        .blog-content h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-top: 0;
+            background: linear-gradient(to right, #ffffff, #8b949e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .blog-content p {
+            margin-bottom: 1.5em;
+            color: var(--text-secondary);
+        }
+
+        .blog-content a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .blog-content a:hover {
+            text-decoration: underline;
+        }
+
+        .blog-content code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .blog-content pre {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            margin-bottom: 1.5em;
+            border: 1px solid var(--card-border);
+        }
+
+        .blog-content pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .share-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .share-btn:hover {
+            background: var(--card-border);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        #back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        #back-btn:hover {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo">Scutoid</a>
+        <div class="nav-links">
+            <a href="mainpage.html" class="nav-link">Blog</a>
+            <a href="mailto:support@scutoid.top" class="nav-link contact-btn">Contact</a>
+        </div>
+    </nav>
+
+    <main class="blog-container">
+        <a href="mainpage.html" id="back-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Blog
+        </a>
+
+        <div id="content-area">
+            <div class="loading">Loading post...</div>
+        </div>
+
+        <div id="share-area" class="share-buttons" style="display: none;">
+            <button class="share-btn" onclick="share('twitter')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+                    </path>
+                </svg>
+                Share on Twitter
+            </button>
+            <button class="share-btn" onclick="share('copy')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy Link
+            </button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Scutoid. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Get post name from URL parameter 'p'
+        const urlParams = new URLSearchParams(window.location.search);
+        const postName = urlParams.get('p');
+
+        const contentArea = document.getElementById('content-area');
+        const shareArea = document.getElementById('share-area');
+
+        if (!postName) {
+            contentArea.innerHTML = '<p>No post specified.</p>';
+        } else {
+            // Fetch the markdown file
+            fetch(`posts/${postName}.md`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Post not found');
+                    return response.text();
+                })
+                .then(markdown => {
+                    // Parse markdown
+                    const htmlContent = marked.parse(markdown);
+
+                    // Render
+                    contentArea.innerHTML = `
+                        <div class="blog-content">
+                            ${htmlContent}
+                        </div>
+                    `;
+
+                    // Update Title from first H1 if exists
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = htmlContent;
+                    const h1 = tempDiv.querySelector('h1');
+                    if (h1) {
+                        document.title = `${h1.innerText} - Scutoid Blog`;
+                    }
+
+                    // Show share buttons
+                    shareArea.style.display = 'flex';
+                })
+                .catch(err => {
+                    contentArea.innerHTML = `<p>Error loading post: ${err.message}</p>`;
+                });
+        }
+
+        function share(platform) {
+            const url = window.location.href;
+            const text = document.title;
+
+            if (platform === 'twitter') {
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+            } else if (platform === 'copy') {
+                navigator.clipboard.writeText(url).then(() => {
+                    // Visual feedback could be added here
+                    const btn = document.querySelector('button[onclick="share(\'copy\')"]');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = 'Copied!';
+                    setTimeout(() => btn.innerHTML = originalText, 2000);
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>

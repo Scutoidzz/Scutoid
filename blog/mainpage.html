@@ -1,19 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0
-    </head>
-        <link rel="stylesheet" href="../styles.css" />
-        <title>Blog - Scutoid</title>
-    <body>
-        <div id="navbar">
-            <a href="../index.html">Home</a>
-            <a href="../projects.html">Projects</a>
 
-            <a href="../about.html">AI</a>
-            <a href="../contact.html">Contact</a>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog - Scutoid</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+        .blog-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .blog-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            border-color: var(--text-secondary);
+        }
+
+        .blog-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .blog-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .blog-excerpt {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .read-more {
+            margin-top: auto;
+            color: var(--accent-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo">Scutoid</a>
+        <div class="nav-links">
+            <a href="mainpage.html" class="nav-link" style="color: var(--text-primary);">Blog</a>
+            <a href="mailto:support@scutoid.top" class="nav-link contact-btn">Contact</a>
         </div>
-        <h1>Scutoid Blog</h1>
-    </body>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Blog</h1>
+            <p>Thoughts, stories, and ideas.</p>
+        </section>
+
+        <!-- Blog Posts Grid -->
+        <div class="blog-list">
+
+            <!-- Post 1: Model Celeron -->
+            <a href="view.html?p=modelceleron" class="blog-card">
+                <span class="blog-date">Featured</span>
+                <h2 class="blog-title">Running LLMs on An Intel Celeron</h2>
+                <p class="blog-excerpt">
+                    Now me, being the person I am, decided to try doing things that don't make sense. I started by
+                    downloading ollama...
+                </p>
+                <div class="read-more">
+                    Read Article
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Scutoid. All rights reserved.</p>
+    </footer>
+
+</body>
+
 </html>
