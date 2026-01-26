@@ -5,6 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scutoid AI</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="aistyling.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -12,6 +18,39 @@
     <script src="../components/navbar.js" defer></script>
     <script src="../Accounts/cookies.js" defer></script>
     <style>
+        /* Override AI Styling for Consistency */
+        body {
+            font-family: var(--font-main) !important;
+            background-color: var(--bg-color);
+        }
+
+        /* Ensure Navbar sits on top */
+        .navbar {
+            top: 20px;
+            width: auto;
+            max-width: 90%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Adjust App Layout for Fixed Navbar */
+        .app-layout {
+            height: 100vh !important;
+            padding-top: 80px;
+            /* Space for navbar */
+            box-sizing: border-box;
+        }
+
+        .sidebar {
+            height: 100%;
+            border-top-right-radius: 12px;
+        }
+
+        .main-content {
+            border-top-left-radius: 12px;
+        }
+
+        /* Thinking Styles from previous */
         .thinking-section {
             background: rgba(100, 100, 255, 0.05);
             border-left: 3px solid rgba(100, 100, 255, 0.3);
@@ -91,16 +130,19 @@
             }
         }
     </style>
-
-    <div id="navbar">
-        <a href="../index.html">Home</a>
-        <a href="../projects.html">Projects</a>
-        <a href="../contact.html">Contact</a>
-        <a href="../Accounts/signin.html" id="signin-link">Sign In</a>
-    </div>
 </head>
 
-<body>
+<body data-theme="dark">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo">Scutoid</a>
+        <div class="nav-links">
+            <a href="../blog/mainpage.html" class="nav-link">Blog</a>
+            <a href="../projects.html" class="nav-link">Projects</a>
+            <a href="../contact.html" class="nav-link">Contact</a>
+            <a href="../Accounts/signin.html" class="nav-link contact-btn">Sign In</a>
+        </div>
+    </nav>
     <!-- Navbar Placeholder -->
     <div id="navbar-placeholder"></div>
 

@@ -267,3 +267,94 @@ footer {
     color: var(--text-secondary);
     font-size: 0.9rem;
 }
+
+/* ===== Global Form Styles ===== */
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    background: rgba(13, 17, 23, 0.5);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+button,
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-main);
+}
+
+button:hover,
+.btn:hover {
+    background: var(--card-border);
+    transform: translateY(-1px);
+}
+
+button.primary,
+.btn.primary {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #ffffff;
+}
+
+button.primary:hover,
+.btn.primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
+/* Center Container for Auth Pages */
+.auth-container {
+    max-width: 400px;
+    margin: 120px auto 60px;
+    padding: 0 20px;
+}
+
+.auth-footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.auth-footer a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}

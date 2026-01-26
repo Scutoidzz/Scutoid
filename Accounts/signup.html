@@ -1,42 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="../styles.css" />
-        <title>Sign Up - Scutoid</title>
-    </head>
-    <body>
-        <div id="navbar">
-            <a href="../index.html">Home</a>
-            <a href="../projects.html">Projects</a>
-            <a href="../about.html">AI</a>
-            <a href="../contact.html">Contact</a>
-        </div>
-        <h1>Create Account</h1>
-        
-        <div id="error-message" style="color: red; display: none;">Error creating account</div>
-        <form id="sign_up" action="signup.php" method="POST">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required />
-            <br />
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required />
-            <br />
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required />
-            <br />
-            <button id="signupbutton" type="submit">Sign Up</button>
-        </form>
-        <script>
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('error')) {
-                const errorDiv = document.getElementById('error-message');
-                errorDiv.style.display = 'block';
-                errorDiv.innerText = urlParams.get('error') === 'exists' ? 'Username already exists' : 'Error creating account';
-            }
-        </script>
 
-        <a href="signin.html"><button>Already have an account?</button></a>
-    </body>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - Scutoid</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css" />
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo">Scutoid</a>
+        <div class="nav-links">
+            <a href="../blog/mainpage.html" class="nav-link">Blog</a>
+            <a href="signin.html" class="nav-link">Sign In</a>
+        </div>
+    </nav>
+
+    <main class="auth-container">
+        <div class="card">
+            <h1 style="margin-bottom: 24px; text-align: center;">Create Account</h1>
+
+            <div id="error-message"
+                style="background: rgba(255, 100, 100, 0.1); border: 1px solid rgba(255, 100, 100, 0.3); color: #ff6b6b; padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 0.9rem; text-align: center; display: none;">
+                Error creating account
+            </div>
+
+            <form id="sign_up" action="signup.php" method="POST">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required placeholder="Choose a username" />
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email" />
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Choose a secure password" />
+
+                <button id="signupbutton" type="submit" class="primary" style="width: 100%; margin-top: 8px;">Sign
+                    Up</button>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="signin.html">Sign In</a></p>
+        </div>
+    </main>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error')) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.style.display = 'block';
+            errorDiv.innerText = urlParams.get('error') === 'exists' ? 'Username already exists' : 'Error creating account';
+        }
+    </script>
+</body>
+
 </html>

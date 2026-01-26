@@ -1,47 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="../styles.css" />
-        <title>Sign In - Scutoid</title>
-    </head>
-    <body>
-        <div id="navbar">
-            <a href="../index.html">Home</a>
-            <a href="../projects.html">Projects</a>
-            <a href="../about.html">AI</a>
-            <a href="../contact.html">Contact</a>
-        </div>
-        <h1>Sign In</h1>
-        <script src="cookies.js"></script>
-        <div id="error-message" style="color: red; display: none;">Invalid username or password</div>
-        <form id="sign_in" action="signin.php" method="POST">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required />
-            <br />
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required />
-            <br />
-            <button id="signinbutton" type="submit">Sign In</button>
-        </form>
-<script>
-    // Check for error query parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('error') === 'invalid_credentials') {
-        document.getElementById('error-message').style.display = 'block';
-    }
-    
-    // Handle successful login from URL parameter
-    if (urlParams.get('login') === 'success') {
-        const username = urlParams.get('username');
-        if (username) {
-            // Cookie should already be set by PHP, redirect to chat
-            window.location.href = '../index.html';
-        }
-    }
-</script>
 
-        <button>Don't have an account?</button>
-    </body>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In - Scutoid</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css" />
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo">Scutoid</a>
+        <div class="nav-links">
+            <a href="../blog/mainpage.html" class="nav-link">Blog</a>
+            <a href="signup.html" class="nav-link">Sign Up</a>
+        </div>
+    </nav>
+
+    <main class="auth-container">
+        <div class="card">
+            <h1 style="margin-bottom: 24px; text-align: center;">Sign In</h1>
+
+            <div id="error-message"
+                style="background: rgba(255, 100, 100, 0.1); border: 1px solid rgba(255, 100, 100, 0.3); color: #ff6b6b; padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 0.9rem; text-align: center; display: none;">
+                Invalid username or password
+            </div>
+
+            <form id="sign_in" action="signin.php" method="POST">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required placeholder="Enter your username" />
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password" />
+
+                <button id="signinbutton" type="submit" class="primary" style="width: 100%; margin-top: 8px;">Sign
+                    In</button>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="signup.html">Create one</a></p>
+        </div>
+    </main>
+
+    <script src="cookies.js"></script>
+    <script>
+        // Check for error query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === 'invalid_credentials') {
+            document.getElementById('error-message').style.display = 'block';
+        }
+
+        // Handle successful login from URL parameter
+        if (urlParams.get('login') === 'success') {
+            const username = urlParams.get('username');
+            if (username) {
+                // Cookie should already be set by PHP, redirect to home
+                window.location.href = '../index.html';
+            }
+        }
+    </script>
+</body>
+
 </html>
